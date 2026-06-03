@@ -139,7 +139,8 @@ class StealthOverlayApp(QObject):
         self.dummy_parent.setWindowFlags(Qt.WindowType.Tool)
         self.dummy_parent.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.dummy_parent.setGeometry(0, 0, 1, 1)
-        self.dummy_parent.show()
+        self.dummy_parent.setWindowTitle("")
+        # Keep parent hidden to avoid showing up in window capture lists
 
         # Setup main Solution Overlay UI
         ui_cfg = self.config["ui"]
@@ -150,6 +151,7 @@ class StealthOverlayApp(QObject):
             default_opacity=ui_cfg["opacity"],
             font_size=ui_cfg["font_size"]
         )
+        self.solution_overlay.setWindowTitle("")
         
         # Initial positioning on the right side of primary monitor
         screen_geo = QtGui.QGuiApplication.primaryScreen().geometry()
@@ -239,12 +241,13 @@ class StealthOverlayApp(QObject):
 
     def set_stealth_mode(self, stealth: bool):
         """Toggles between click-through state (stealth) and interactive mode."""
+        self.solution_overlay.is_interactive = not stealth
         self.solution_overlay.update_interactive_style(not stealth)
         apply_click_through(int(self.solution_overlay.winId()), stealth)
 
     def toggle_interactive_mode(self):
         """Flips current interaction state."""
-        new_stealth = not self.solution_overlay.is_interactive
+        new_stealth = self.solution_overlay.is_interactive
         self.set_stealth_mode(new_stealth)
 
     def toggle_overlay_visibility(self):

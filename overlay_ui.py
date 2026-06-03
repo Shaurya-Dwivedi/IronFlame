@@ -416,7 +416,7 @@ class SolutionOverlay(QWidget):
 
     # ------------------ Dynamic Opacity Control ------------------
     def wheelEvent(self, event):
-        """Modifies opacity dynamically using Ctrl + Mouse Scroll Wheel."""
+        """Modifies opacity dynamically using Ctrl + Mouse Scroll Wheel. Otherwise lets QTextBrowser handle scrolling."""
         if event.modifiers() & Qt.KeyboardModifier.ControlModifier:
             num_degrees = event.angleDelta().y() / 8
             num_steps = num_degrees / 15
@@ -431,6 +431,7 @@ class SolutionOverlay(QWidget):
             self.opacity_changed.emit(self.current_opacity)
             event.accept()
         else:
+            # If not ctrl+scroll, pass to super class or handle accordingly
             super().wheelEvent(event)
 
     # ------------------ Draggable Window implementation ------------------

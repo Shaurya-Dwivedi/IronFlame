@@ -1,4 +1,4 @@
-# Stealth Programming Assistant Screen Overlay
+# IronFlame: Stealth Programming Assistant Screen Overlay
 
 ![OS: Windows](https://img.shields.io/badge/OS-Windows_10%2F11-0078D4?style=flat-square&logo=windows&logoColor=white)
 ![Python: 3.10+](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)

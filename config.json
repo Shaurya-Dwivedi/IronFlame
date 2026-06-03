@@ -1,0 +1,22 @@
+{
+  "gemini_model": "gemini-3.1-flash-lite",
+  "capture_monitor": 0,
+  "hotkeys": {
+    "solve_region": "<ctrl>+<alt>+s",
+    "solve_fullscreen": "<ctrl>+<alt>+f",
+    "toggle_visibility": "<ctrl>+<alt>+h",
+    "toggle_interactive": "<ctrl>+<alt>+i",
+    "copy_code": "<ctrl>+<alt>+c",
+    "history_prev": "<ctrl>+<alt>+[",
+    "history_next": "<ctrl>+<alt>+]",
+    "clear": "<ctrl>+<alt>+l",
+    "quit": "<ctrl>+<alt>+q"
+  },
+  "ui": {
+    "width": 450,
+    "height": 650,
+    "opacity": 0.85,
+    "font_size": 13,
+    "theme": "glassmorphic_dark"
+  }
+}

@@ -24,10 +24,12 @@ class GeminiSolver(BaseSolver):
     @property
     def client(self) -> genai.Client:
         """Lazy-loaded Gemini GenAI client."""
-        if self._client is None:
-            if not self.api_key:
+        # Dynamically reload environment key in case .env was populated/modified after startup
+        key = self.api_key or os.getenv("GEMINI_API_KEY")
+        if self._client is None or (key and getattr(self._client, "_api_key", None) != key):
+            if not key:
                 raise ValueError("GEMINI_API_KEY is not set. Please provide it in the .env file.")
-            self._client = genai.Client(api_key=self.api_key)
+            self._client = genai.Client(api_key=key)
         return self._client
 
     def solve_screenshot_stream(self, screenshot_path: str, user_prompt: str = "") -> Generator[str, None, None]:

@@ -211,8 +211,8 @@ class SolutionOverlay(QWidget):
     """
     opacity_changed = Signal(float)
     
-    def __init__(self, width: int = 450, height: int = 700, default_opacity: float = 0.85, font_size: int = 13):
-        super().__init__()
+    def __init__(self, parent=None, width: int = 450, height: int = 700, default_opacity: float = 0.85, font_size: int = 13):
+        super().__init__(parent)
         
         self.default_width = width
         self.default_height = height
@@ -230,8 +230,7 @@ class SolutionOverlay(QWidget):
         self.setWindowFlags(
             Qt.WindowType.FramelessWindowHint | 
             Qt.WindowType.WindowStaysOnTopHint | 
-            Qt.WindowType.Tool |
-            Qt.WindowType.WindowDoesNotAcceptFocus
+            Qt.WindowType.Tool
         )
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setWindowOpacity(self.current_opacity)

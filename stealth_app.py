@@ -8,9 +8,15 @@ from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import Qt, QObject, Signal, QThread, QRect, QFileSystemWatcher
 from pynput import keyboard
 
-# Load dotenv to get GEMINI_API_KEY
+# Load dotenv to get GEMINI_API_KEY from either current directory or dist directory
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-load_dotenv(os.path.join(BASE_DIR, ".env"))
+if getattr(sys, 'frozen', False):
+    # Running inside compiled exe bundle
+    load_dotenv(os.path.join(sys._MEIPASS, ".env"))
+    load_dotenv(os.path.join(os.path.dirname(sys.executable), ".env"))
+else:
+    # Running in source code mode
+    load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 # Import local components
 from overlay_ui import SelectionOverlay, SolutionOverlay
@@ -127,9 +133,18 @@ class StealthOverlayApp(QObject):
         self.hotkey_emitter = HotkeyEmitter()
         self.solver = GeminiSolver(model_name=self.config["gemini_model"])
 
+        # Create a completely hidden dummy parent window to own the overlay.
+        # Windows hides child windows owned by a tool window from application sharing lists.
+        self.dummy_parent = QtWidgets.QWidget()
+        self.dummy_parent.setWindowFlags(Qt.WindowType.Tool)
+        self.dummy_parent.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.dummy_parent.setGeometry(0, 0, 1, 1)
+        self.dummy_parent.show()
+
         # Setup main Solution Overlay UI
         ui_cfg = self.config["ui"]
         self.solution_overlay = SolutionOverlay(
+            parent=self.dummy_parent,
             width=ui_cfg["width"],
             height=ui_cfg["height"],
             default_opacity=ui_cfg["opacity"],
@@ -208,8 +223,8 @@ class StealthOverlayApp(QObject):
 
     def on_overlay_show(self, event):
         """Event hook called when overlay is rendered. Sets initial Windows display affinity."""
-        self.solution_overlay.apply_display_affinity()
-        # Override paint events to re-apply affinity continuously
+        apply_display_affinity(int(self.solution_overlay.winId()))
+        # Override events to re-apply affinity continuously
         self.solution_overlay.focusInEvent = lambda e: self.reapply_wda()
         self.solution_overlay.changeEvent = lambda e: self.on_state_change(e)
 
